@@ -10,12 +10,6 @@ const Login = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (localStorage.getItem("auth")) {
-      router.push("/");
-    }
-  });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -26,15 +20,22 @@ const Login = () => {
     }
 
     const { data } = await axios.post("/user/login", { username, password });
+    // console.log(data.id,`data login <<<<<<<<<<<<<,,,`);
 
     if (!data) {
       console.error(error);
       setError("Invalid username or password");
     } else {
-      localStorage.setItem("auth", JSON.stringify(data));
-      router.push("/");
+      localStorage.setItem("auth", JSON.stringify(data.id));
+    //   router.push("/");
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      router.push("/");
+    }
+  });
 
   return (
     <div>
