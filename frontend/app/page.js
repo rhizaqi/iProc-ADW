@@ -6,6 +6,17 @@ import { useEffect, useState } from "react";
 const Home = () => {
   const router = useRouter();
   const [dataUsers, setDataUsers] = useState();
+  const [userLogin, setUserLogin] = useState({});
+
+  const dataLogin = async (idLogin) => {
+    try {
+      const { data } = await axios.get("/users/" + idLogin);
+      setUserLogin(data)
+      // console.log(data, `yang login nih`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -27,6 +38,8 @@ const Home = () => {
       redirect("login");
     }
     fetchData();
+    const idLogin = localStorage.getItem("auth");
+    dataLogin(idLogin);
   }, []);
   return (
     <div className="flex flex-col gap-10 p-4">
@@ -37,8 +50,14 @@ const Home = () => {
         </div>
       </div>
 
+      <div className="w-full text-sm text-center text-gray-500 dark:text-gray-400 shadow-amber-50 shadow-2xl">
+        <div className="flex text-L text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white h-20 items-center justify-center rounded-lg">
+          {userLogin.firstName}
+        </div>
+      </div>
+
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400 shadow-amber-50 shadow-2xl ">
+        <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400 shadow-amber-50 shadow-2xl">
           <thead className="text-L text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
             <tr>
               <th scope="col" className="px-6 py-3">
@@ -58,7 +77,6 @@ const Home = () => {
               </th>
             </tr>
           </thead>
-
           <tbody>
             {dataUsers ? (
               dataUsers.map((el, i) => {
