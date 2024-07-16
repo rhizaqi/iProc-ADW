@@ -1,4 +1,5 @@
 "use client";
+import { Dropdown } from "flowbite-react";
 import axios from "./instance/instance";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,7 +11,7 @@ const Home = () => {
   const [userLogin, setUserLogin] = useState({});
   const [option, setOption] = useState({
     sortBy: "",
-    order: "",
+    order: "asc",
     search: "",
   });
 
@@ -24,19 +25,19 @@ const Home = () => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (params = {}) => {
     try {
       if (option.search) {
         const { data } = await axios.get(`/users/search?q=${option.search}`);
         setDataUsers(data.users);
-      } else if (option.order && option.sortBy) {
+      } else if (params.order && params.sortBy) {
         const { data } = await axios.get(
-          `/users?sortBy=${option.sortBy}&order=${option.order}`
+          `/users?sortBy=${params.sortBy}&order=${params.order}`
         );
         setDataUsers(data.users);
       } else {
         const { data } = await axios.get(`/users`);
-        // console.log(data.users, `????`);
+        console.log(data.users, `????`);
         setDataUsers(data.users);
       }
     } catch (error) {
@@ -55,6 +56,21 @@ const Home = () => {
       ...option,
       search: value,
     });
+  }
+
+  function handleSort(value) {
+    setOption({
+      ...option,
+      sortBy: value,
+    });
+    fetchData({ ...option, sortBy: value });
+  }
+  function handleOrderBy(value) {
+    setOption({
+      ...option,
+      order: value,
+    });
+    fetchData({ ...option, order: value });
   }
 
   const handleLogout = () => {
@@ -87,12 +103,12 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="w-full text-sm text-center text-gray-500 dark:text-gray-400 shadow-amber-50 shadow-2xl">
-        <div className="flex text-L text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white h-20 items-center justify-between rounded-lg p-4">
+      <div className="w-full text-sm text-center text-gray-800">
+        <div className="flex text-L text-gray-900 uppercase bg-gray-500 h-20 items-center justify-between rounded-lg p-4">
           <div className="flex flex-col">
             <div className="text-2xl font-bold">{userLogin.firstName}</div>
-            <div className="text-xs font-thin">{userLogin.company?.title}</div>
-            <div className="text-xs font-thin">
+            <div className="text-xs font-light">{userLogin.company?.title}</div>
+            <div className="text-xs font-light">
               {userLogin.company?.department}
             </div>
           </div>
@@ -109,83 +125,31 @@ const Home = () => {
             </div>
           </div>
           <div>
-            <button
-              id="dropdownDefaultButton"
-              data-dropdown-toggle="dropdown"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              type="button"
-            >
-              Sort {" "}
-              <svg
-                className="w-2.5 h-2.5 ms-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 1 4 4 4-4"
-                />
-              </svg>
-            </button>
-
-            <div
-              id="dropdown"
-              className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-            >
-              <ul
-                className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownDefaultButton"
-              >
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Earnings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <Dropdown label="Sort" dismissOnClick={false} inline>
+              <Dropdown.Item onClick={() => handleSort("firstName")}>
+                First Name
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSort("lastName")}>
+                Last Name
+              </Dropdown.Item>
+            </Dropdown>
           </div>
           <div>
-            <button> Order by </button>
-            {/* ASC - DESC */}
+            <Dropdown label="Order By" dismissOnClick={false} inline>
+              <Dropdown.Item onClick={() => handleOrderBy("asc")}>
+                Ascending
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => handleOrderBy("desc")}>
+                Descending
+              </Dropdown.Item>
+            </Dropdown>
           </div>
         </div>
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400 shadow-amber-50 shadow-2xl">
-          <thead className="text-L text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
+        <table className="w-full text-sm text-center text-gray-300">
+          <thead className="text-L text-gray-700 uppercase bg-gray-500">
             <tr>
               <th scope="col" className="px-6 py-3">
                 No.
@@ -211,10 +175,7 @@ const Home = () => {
             {dataUsers ? (
               dataUsers.map((el, i) => {
                 return (
-                  <tr
-                    key={i}
-                    className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-                  >
+                  <tr key={i} className="bg-gray-800">
                     <td className="px-6 py-4"> {i + 1}</td>
                     <td className="px-6 py-4"> {el.firstName}</td>
                     <td className="px-6 py-4"> {el.username}</td>
