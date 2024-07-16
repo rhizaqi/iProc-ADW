@@ -53,6 +53,12 @@ const Home = () => {
     <div className="flex flex-col gap-10 p-4">
       <div className="flex justify-between">
         <div>Home page</div>
+        <button
+          className="w-20 h-10 border rounded-xl border-gray-800"
+          onClick={() => router.push("/add")}
+        >
+          Add
+        </button>
         <div>
           <button onClick={handleLogout}>Logout</button>
         </div>
@@ -62,8 +68,10 @@ const Home = () => {
         <div className="flex text-L text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white h-20 items-center justify-between rounded-lg p-4">
           <div className="flex flex-col">
             <div className="text-2xl font-bold">{userLogin.firstName}</div>
-            <div className="text-sm font-light">{userLogin.company?.title}</div>
-            <div>{userLogin.company?.department}</div>
+            <div className="text-xs font-thin">{userLogin.company?.title}</div>
+            <div className="text-xs font-thin">
+              {userLogin.company?.department}
+            </div>
           </div>
           <div className="flex gap-2 items-center">
             <input
