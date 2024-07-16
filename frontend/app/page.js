@@ -143,7 +143,7 @@ const Home = () => {
                 );
               })
             ) : (
-              <tr>
+              <tr className="h-16">
                 <td colSpan={10}>Loading...</td>
               </tr>
             )}

@@ -1,9 +1,12 @@
 "use client";
 import axios from "@/app/instance/instance";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Users = () => {
+  const router = useRouter();
+
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -30,6 +33,17 @@ const Users = () => {
     }
   };
 
+  const updateData = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.put("/users/" + params.id, data);
+      console.log(response, `udah update?`);
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -38,7 +52,7 @@ const Users = () => {
     <div className="bg-emerald-500 min-h-screen">
       <div className="flex p-8 justify-center">
         <div className="flex justify-center rounded-xl mt-16 p-5 bg-teal-400">
-          <form>
+          <form onSubmit={updateData}>
             <div className="sm:col-span-4 mt-4">
               <label className="block text-base font-bold leading-6 text-gray-900">
                 First Name
@@ -98,7 +112,7 @@ const Users = () => {
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2">
                   <input
                     type="text"
-                    name="imgUrl"
+                    name="gender"
                     onChange={dataHandler}
                     value={data.gender}
                     className="block flex-1 border-0 rounded-md shadow-sm bg-white py-1.5 pl-1 text-gray-900"
