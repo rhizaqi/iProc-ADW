@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "../instance/instance";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -26,8 +27,14 @@ const Login = () => {
       console.error(error);
       setError("Invalid username or password");
     } else {
+      Swal.fire({
+        title: "Login Success",
+        text: "Login Success",
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
       localStorage.setItem("auth", JSON.stringify(data.id));
-    //   router.push("/");
+      //   router.push("/");
     }
   };
 
