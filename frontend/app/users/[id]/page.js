@@ -3,9 +3,14 @@ import axios from "@/app/instance/instance";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { userDetail } from "@/app/features/userSlices";
+import { useDispatch, useSelector } from "react-redux";
 
 const Users = () => {
   const router = useRouter();
+  // const dispatch = useDispatch();
+  // const detailUser = useSelector((state) => state.user);
+
 
   const [data, setData] = useState({
     firstName: "",
@@ -21,11 +26,11 @@ const Users = () => {
       [name]: value,
     });
   };
-  const params = useParams();
+  const { id } = useParams();
 
   const fetchData = async () => {
     try {
-      const { data } = await axios.get("/user/" + params.id);
+      const { data } = await axios.get("/user/" + id);
       // console.log(data, `???? dapat gak`);
       setData(data);
     } catch (error) {
@@ -36,7 +41,7 @@ const Users = () => {
   const updateData = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.put("/users/" + params.id, data);
+      const response = await axios.put("/users/" + id, data);
       console.log(response, `udah update?`);
       router.push("/");
     } catch (error) {
@@ -46,6 +51,7 @@ const Users = () => {
 
   useEffect(() => {
     fetchData();
+    // dispatch(userDetail(id));
   }, []);
 
   return (
